@@ -1,0 +1,12 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 45e66d0c..4919fd60 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -945,6 +945,7 @@ if (${GPU_MODE} MATCHES "OPENCL")
+   set(OpenPose_3rdparty_libraries ${OpenPose_3rdparty_libraries} ${CMAKE_THREAD_LIBS_INIT} ${OpenCL_LIBRARIES})
+ endif (${GPU_MODE} MATCHES "OPENCL")
+ # Boost
++find_package(Boost COMPONENTS system filesystem REQUIRED)
+ if (WIN32)
+     if (${GPU_MODE} MATCHES "CPU_ONLY" OR ${GPU_MODE} MATCHES "OPENCL" OR BUILD_PYTHON)
+     set(OpenPose_3rdparty_libraries ${OpenPose_3rdparty_libraries}

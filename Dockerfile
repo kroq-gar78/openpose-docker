@@ -52,7 +52,7 @@ RUN echo "Downloading and building OpenPose..." && \
 # Generate a link to the stub for libnvidia-ml.so.1.
 # If we don't do this, we need the NVIDIA docker runtime during build, which would mean setting nvidia to the default runtime for ALL docker containers
 # Source: https://github.com/NVIDIA/nvidia-docker/wiki/Advanced-topics#default-runtime
-# TODO: should this only create a libnvidia-ml.so.1 link inside stubs/?
+# TODO: should this only create a libnvidia-ml.so.1 link inside stubs?
 # TODO: change the link name based on Docker tags
 RUN ln -s  /usr/local/cuda/lib64/stubs/libnvidia-ml.so /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.450.66 && \
     ldconfig
