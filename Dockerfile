@@ -31,14 +31,16 @@ RUN echo "Installing dependencies..." && \
 RUN python3 -m pip install \
     numpy
 
+# Recompile OpenCV with ffmpeg, so that we get video support (which we want in OpenPose).
+# Use the commands/flags from the NVCaffe image.
 RUN OPENCV_VERSION=3.4.0 && \
     cd / && \
     wget -q -O - https://github.com/Itseez/opencv/archive/${OPENCV_VERSION}.tar.gz | tar -xzf - && \
     cd /opencv-${OPENCV_VERSION} && mkdir build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr \
-    -DWITH_CUDA=OFF -DWITH_1394=OFF \
-    -DBUILD_opencv_cudalegacy=OFF -DBUILD_opencv_stitching=OFF -DWITH_IPP=OFF \
-    -DWITH_FFMPEG=ON -DWITH_LIBV4L=ON&& \
+        -DWITH_CUDA=OFF -DWITH_1394=OFF \
+        -DBUILD_opencv_cudalegacy=OFF -DBUILD_opencv_stitching=OFF -DWITH_IPP=OFF \
+        -DWITH_FFMPEG=ON -DWITH_LIBV4L=ON && \
     make -j"$(nproc)" install
 
 COPY openpose_cmake_boost.patch /workspace/
