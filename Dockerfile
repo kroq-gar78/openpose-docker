@@ -10,26 +10,26 @@ FROM nvcr.io/nvidia/caffe:20.03-py3
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN echo "Installing dependencies..." && \
-	apt-get -y --no-install-recommends update && \
-	apt-get install -y --no-install-recommends \
-	build-essential \
-	cmake \
-	ffmpeg \
-	git \
-	libatlas-base-dev \
+    apt-get -y --no-install-recommends update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    ffmpeg \
+    git \
+    libatlas-base-dev \
     libavcodec-dev libavformat-dev libavdevice-dev \
-	libleveldb-dev \
-	libsnappy-dev \
-	libhdf5-serial-dev \
-	libgflags-dev \
-	libgoogle-glog-dev \
-	liblmdb-dev \
+    libleveldb-dev \
+    libsnappy-dev \
+    libhdf5-serial-dev \
+    libgflags-dev \
+    libgoogle-glog-dev \
+    liblmdb-dev \
     libv4l-dev \
-	pciutils \
-	libcanberra-gtk-module
+    pciutils \
+    libcanberra-gtk-module
 
 RUN python3 -m pip install \
-	numpy
+    numpy
 
 RUN OPENCV_VERSION=3.4.0 && \
     cd / && \
@@ -46,7 +46,7 @@ COPY openpose_cmake_boost.patch /workspace/
 # Some flags from: http://peter-uhrig.de/openpose-with-nvcaffe-in-a-singularity-container-with-support-for-multiple-architectures/
 # TODO: enable model download
 RUN echo "Downloading and building OpenPose..." && \
-	git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git /openpose
+    git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git /openpose
 
 
 # Generate a link to the stub for libnvidia-ml.so.1.
@@ -59,11 +59,11 @@ RUN ln -s  /usr/local/cuda/lib64/stubs/libnvidia-ml.so /usr/lib/x86_64-linux-gnu
 
 RUN cd /openpose && \
     patch -p1 -i /workspace/openpose_cmake_boost.patch && \
-	mkdir -p /openpose/build && \
-	cd /openpose/build && \
-	cmake .. -DDL_FRAMEWORK=NV_CAFFE -DCaffe_INCLUDE_DIRS=/usr/local/lib/include/caffe \
+    mkdir -p /openpose/build && \
+    cd /openpose/build && \
+    cmake .. -DDL_FRAMEWORK=NV_CAFFE -DCaffe_INCLUDE_DIRS=/usr/local/lib/include/caffe \
         -DCaffe_LIBS=/usr/local/lib/libcaffe-nv.so -DBUILD_CAFFE=OFF -DCUDA_ARCH=All && \
-	make -j`nproc`
+    make -j`nproc`
 
 # Delete the symlink, or it will fail to boot up (since it gets overwritten)
 RUN rm -f /usr/lib/x86_64-linux-gnu/libnvidia-ml.so*
