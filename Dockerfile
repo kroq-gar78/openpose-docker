@@ -1,6 +1,8 @@
 # Ubuntu 18.04
 FROM nvcr.io/nvidia/caffe:20.03-py3
 
+LABEL maintainer="Aditya Vaidya <avaidya@utexas.edu>"
+
 # without this environment variable, the apt-get statement below will
 # hang waiting user input after a prompt of:
 #
@@ -12,21 +14,22 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "Installing dependencies..." && \
     apt-get -y --no-install-recommends update && \
     apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    ffmpeg \
-    git \
-    libatlas-base-dev \
-    libavcodec-dev libavformat-dev libavdevice-dev \
-    libleveldb-dev \
-    libsnappy-dev \
-    libhdf5-serial-dev \
-    libgflags-dev \
-    libgoogle-glog-dev \
-    liblmdb-dev \
-    libv4l-dev \
-    pciutils \
-    libcanberra-gtk-module
+        build-essential \
+        cmake \
+        ffmpeg \
+        git \
+        libatlas-base-dev \
+        libavcodec-dev libavformat-dev libavdevice-dev \
+        libleveldb-dev \
+        libsnappy-dev \
+        libhdf5-serial-dev \
+        libgflags-dev \
+        libgoogle-glog-dev \
+        liblmdb-dev \
+        libv4l-dev \
+        pciutils \
+        libcanberra-gtk-module && \
+    rm -rf /var/lib/apt/lists/
 
 RUN python3 -m pip install \
     numpy
@@ -38,9 +41,9 @@ RUN OPENCV_VERSION=3.4.0 && \
     wget -q -O - https://github.com/Itseez/opencv/archive/${OPENCV_VERSION}.tar.gz | tar -xzf - && \
     cd /opencv-${OPENCV_VERSION} && mkdir build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr \
-        -DWITH_CUDA=OFF -DWITH_1394=OFF \
+        -DWITH_CUDA=OFF -DWITH_1394=OFF -DBUILD_DOCS=OFF -DBUILD_TESTS=OFF \
         -DBUILD_opencv_cudalegacy=OFF -DBUILD_opencv_stitching=OFF -DWITH_IPP=OFF \
-        -DWITH_FFMPEG=ON -DWITH_LIBV4L=ON && \
+        -DWITH_FFMPEG=ON -DWITH_LIBV4L=ON -DWITH_OPENMP=ON && \
     make -j"$(nproc)" install
 
 COPY openpose_cmake_boost.patch /workspace/
